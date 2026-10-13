@@ -1,6 +1,8 @@
 
 .VSCodeCounter
 
+credits.py
+
 .env
 __pycache__/
 *.db
