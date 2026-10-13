@@ -1,2 +1,6 @@
 
 .VSCodeCounter
+
+.env
+__pycache__/
+*.db
