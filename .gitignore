@@ -1,9 +1,12 @@
+.env
+__pycache__/
+*.pyc
+*.py[cod]
+*$py.class
+*.db
 
 .VSCodeCounter
 credits.py
 TODO.md
+testapp.py
 
-.env
-__pycache__/
-.pyc
-*.db

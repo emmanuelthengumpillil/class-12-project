@@ -16,7 +16,7 @@ def menu():
         elif choice in ['2']:
             functions.search_user()
         elif choice in ['3']:
-            function.delete_user()
+            functions.delete_user()
         elif choice in ['4']:
             functions.show_from_sql('customer')
         elif choice in ['5', 'exit', 'q']:
