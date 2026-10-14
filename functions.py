@@ -1,6 +1,6 @@
 import mysql.connector as Ms
 import datetime
-import credits
+import credits as crd
 
 def add_user():
     id = int(input("Enter Id: "))
@@ -19,8 +19,24 @@ def search_user():
 def delete_user():
     pass
 
+def show_from_sql(table):
+    connector_obj = Ms.connect(host=crd.host, user=crd.user, password=crd.password, database=crd.database)
+    cursor_obj = connector_obj.cursor()
+
+    query = "Select * from {}".format(table)
+    cursor_obj.execute(query)
+    content = cursor_obj.fetchall()
+    print("--------------------")
+    print("Table name:", table)
+    for i in content:
+        print(i)
+    print("--------------------")
+
+    connector_obj.close()
+
+
 def save_to_sql(values):
-    connector_obj = Ms.connect(host=credits.host, user=credits.user, password=credits.password, database=credits.database)
+    connector_obj = Ms.connect(host=crd.host, user=crd.user, password=crd.password, database=crd.database)
     cursor_obj = connector_obj.cursor()
 
     query1 = "Create table if not exists customer(id int primary key, name varchar(50) not null, phone char(12) not null, email varchar(100) not null, date_modified date not null)"
@@ -34,4 +50,4 @@ def save_to_sql(values):
     connector_obj.close()
     print("Saved successfully")
 
-add_user()
+# add_user()
