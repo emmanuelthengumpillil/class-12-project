@@ -13,7 +13,6 @@ def add_user():
     save_to_sql(values)
 
 
-
 def delete_user():
     name = input("Enter Name: ")
     phone = input("Enter Phone: ")

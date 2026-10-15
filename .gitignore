@@ -1,5 +1,6 @@
 .env
 __pycache__/
+.pytest_cache
 *.pyc
 *.py[cod]
 *$py.class
@@ -9,4 +10,3 @@ __pycache__/
 credits.py
 TODO.md
 testapp.py
-
