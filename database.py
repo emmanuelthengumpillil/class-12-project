@@ -10,17 +10,28 @@ def add_user():
     now = datetime.datetime.now()
     formatted_date = now.strftime(r"%Y-%m-%d")
     values = {"id":id, "name":name, "phone":phone, "email":email, "date":formatted_date}
-    save_to_sql(values)
 
+    query1 = "Create table if not exists customer(id int primary key, name varchar(50) not null, phone char(12) not null, email varchar(100) not null, date_modified date not null)"
+    query2 = "Insert into customer values({}, '{}', '{}', '{}', '{}')".format(values['id'], values['name'], values['phone'], values['email'], values['date'])
+    connect_sql(query1)
+    connect_sql(query2)
+    print("Saved successfully")
 
 def delete_user():
     name = input("Enter Name: ")
     phone = input("Enter Phone: ")
     email = input("Enter Email: ")
     values = {"name":name, "phone":phone, "email":email, "table": 'customer'}
-    remove_from_sql(values)
 
-def sql(query):
+    query = "delete from {} where name = '{}' and phone = '{}' and email = '{}'".format(values['table'], values['name'], values['phone'], values['email'])
+    connect_sql(query)
+    show_from_sql(values['table'])
+    print("Removed successfully")
+
+def search_user():
+    pass
+
+def connect_sql(query):
     connector_obj = Ms.connect(host=crd.host, user=crd.user, password=crd.password, database=crd.database)
     cursor_obj = connector_obj.cursor()
     cursor_obj.execute(query)
@@ -35,25 +46,11 @@ def sql(query):
     
 def show_from_sql(table):
     query = "Select * from {}".format(table)
-    content = sql(query)
+    content = connect_sql(query)
     print("--------------------")
     print("Table name:", table)
 
     for i in content:
         print(i)
     print("--------------------")
-
-def save_to_sql(values):
-
-    query1 = "Create table if not exists customer(id int primary key, name varchar(50) not null, phone char(12) not null, email varchar(100) not null, date_modified date not null)"
-    query2 = "Insert into customer values({}, '{}', '{}', '{}', '{}')".format(values['id'], values['name'], values['phone'], values['email'], values['date'])
-    sql(query1)
-    sql(query2)
-    print("Saved successfully")
-
-def remove_from_sql(values):
-    query = "delete from {} where name = '{}' and phone = '{}' and email = '{}'".format(values['table'], values['name'], values['phone'], values['email'])
-    sql(query)
-    show_from_sql(values['table'])
-    print("Removed successfully")
 

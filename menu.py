@@ -1,4 +1,4 @@
-import functions
+import database
 
 def menu():
     while True:
@@ -12,13 +12,13 @@ def menu():
         choice = input("Enter from the above choices: ")
 
         if choice.lower() in ['1']:
-            functions.add_user()
+            database.add_user()
         elif choice in ['2']:
-            functions.search_user()
+            database.search_user()
         elif choice in ['3']:
-            functions.delete_user()
+            database.delete_user()
         elif choice in ['4']:
-            functions.show_from_sql('customer')
+            database.show_from_sql('customer')
         elif choice in ['5', 'exit', 'q']:
             print("Application stopped")
             break
