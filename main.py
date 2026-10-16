@@ -7,6 +7,7 @@ app = FastAPI(
     description= "A Customer Relation Management System for Business",
     version="1.0.0"
 )
+database.setup_sql()
 
 class UserCreate(BaseModel):
     name: str = Field(min_length=2)
