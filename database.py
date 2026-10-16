@@ -27,7 +27,7 @@ def search_user(user):
     return result
 
 def connect_sql(query):
-    connector_obj = Ms.connect(host=crd.host, user=crd.user, password=crd.password)
+    connector_obj = Ms.connect(host=crd.host, user=crd.user, password=crd.password, database=crd.database)
     if connector_obj.is_connected():
         cursor_obj = connector_obj.cursor()
         cursor_obj.execute(query)
@@ -44,10 +44,10 @@ def connect_sql(query):
         return message
 
 def setup_sql():
-    database = crd.database()
-    query1 = "Create database if not exists {}".format(database)
+    database_name = crd.database
+    query1 = "Create database if not exists {}".format(database_name)
     connect_sql(query1)
-    query2 = "Use {}".format(database)
+    query2 = "Use {}".format(database_name)
     connect_sql(query2)
     query3 = "Create table if not exists customer(id int auto_increment primary key, name varchar(75) not null, phone char(12) not null, email varchar(255) not null, date_modified date not null)"
     connect_sql(query3)
@@ -68,3 +68,4 @@ def desc_table(tablename):
     query = "desc {}".format(tablename)
     result = connect_sql(query)
     return result
+
