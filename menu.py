@@ -12,11 +12,11 @@ def menu():
         choice = input("Enter from the above choices: ")
 
         if choice.lower() in ['1']:
-            database.add_user()
+            database.add_customer()
         elif choice in ['2']:
-            database.search_user()
+            database.search_customer()
         elif choice in ['3']:
-            database.delete_user()
+            database.delete_customer()
         elif choice in ['4']:
             database.show_from_sql('customer')
         elif choice in ['5', 'exit', 'q']:

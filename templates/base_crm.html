@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="flex">
+        <aside class="flex h-screen w-64 flex-col bg-zinc-950 p-2 text-zinc-100">
+            <div class="sticky top-0 z-10 bg-zinc-950 pb-2">
+                <div class="rounded-lg p-2 text-lg font-semibold">SidebarHeader</div>
+            </div>
+            <div class="flex flex-1 flex-col gap-2 py-2">
+                <div class="flex flex-col gap-1 rounded-lg border border-solid border-zinc-800 bg-zinc-900 p-2 hover:bg-zinc-800">
+                <span class="text-md font-normal text-zinc-300">Home</span>
+                </div>
+                <div class="flex flex-col gap-1 rounded-lg border border-solid border-zinc-800 bg-zinc-900 p-2 hover:bg-zinc-800">
+                <span class="text-md font-normal text-zinc-300">Customers</span>
+                </div>
+            </div>
+            <div class="sticky bottom-0 z-10 bg-zinc-950 pt-2">
+                <div class="text-md rounded-lg bg-zinc-900 p-2">UserName</div>
+            </div>
+            </aside>
+
+        <main class="min-w-0 flex-1 overflow-auto bg-blue-50 p-4">
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </div>
+</body>
+</html>

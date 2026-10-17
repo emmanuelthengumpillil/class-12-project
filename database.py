@@ -2,7 +2,7 @@ import mysql.connector as Ms
 import datetime
 import credits as crd
 
-def add_user(user):
+def add_customer(user):
     now = datetime.datetime.now()
     formatted_date = now.strftime(r"%Y-%m-%d")
     values = {"name":user.name, "phone":user.phone, "email":user.email, "date":formatted_date}
@@ -12,7 +12,7 @@ def add_user(user):
     print("Saved successfully")
     return values
 
-def delete_user(user):
+def delete_customer(user):
     values = {"name":user.name, "phone":user.phone, "email":user.email, "table": 'customer'}
     query = "delete from {} where name = '{}' and phone = '{}' and email = '{}'".format(values['table'], values['name'], values['phone'], values['email'])
     connect_sql(query)
@@ -20,7 +20,7 @@ def delete_user(user):
     print("Removed successfully")
     return values
 
-def search_user(user):
+def search_customer(user):
     query = "Select * from customer where name like '{}%'".format(user.name)
     result = connect_sql(query)
     print(result)

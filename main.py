@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 import database
@@ -10,6 +11,7 @@ app = FastAPI(
 )
 
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 database.setup_sql()
 
@@ -31,26 +33,26 @@ def read_root(request: Request):
     message = {"message":"Welcome to Sales Force Crm"}
     return templates.TemplateResponse(request, "home.html", {"posts": message})
 
-@app.get("/users")
+@app.get("/customers")
 def show_all(request: Request):
     table = "customer"
     result = database.show_from_sql(table)
     return templates.TemplateResponse(request, "customer.html", {"result": result})
 
-@app.post("/users/add")
-def add_user(user: UserCreate, request: Request):
-    result = database.add_user(user)
+@app.post("/customers/add")
+def add_customer(user: UserCreate, request: Request):
+    result = database.add_customer(user)
     return templates.TemplateResponse(request, "add_customer.html", {"result": result})
 
-@app.post("/users/delete")
-def delete_user(user: UserDelete, request: Request):
-    result = database.delete_user(user)
+@app.post("/customers/delete")
+def delete_customer(user: UserDelete, request: Request):
+    result = database.delete_customer(user)
     return templates.TemplateResponse(request, "delete_customer.html", {"result": result})
 
 
-@app.post("/users/search")
-def search_user(user: UserSearch, request: Request):
-    result = database.search_user(user)
+@app.post("/customers/search")
+def search_customers(user: UserSearch, request: Request):
+    result = database.search_customer(user)
     return templates.TemplateResponse(request, "search_customer.html", {"result": result})
 
 
