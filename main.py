@@ -13,10 +13,10 @@ app = FastAPI(
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-database.setup_sql()
+# database.setup_sql()
 
 class UserCreate(BaseModel):
-    name: str = Field(min_length=2)
+    name: str
     phone: str = Field(min_length=10, max_length=12)
     email:str
 
@@ -39,16 +39,34 @@ def show_all(request: Request):
     result = database.show_from_sql(table)
     return templates.TemplateResponse(request, "customer.html", {"result": result})
 
+# ADD CUSTOMER
+
+@app.get("/customers/add")
+def show_add_customer_form(request: Request):
+    return templates.TemplateResponse(request, "add_customer.html")
+
 @app.post("/customers/add")
 def add_customer(user: UserCreate, request: Request):
     result = database.add_customer(user)
     return templates.TemplateResponse(request, "add_customer.html", {"result": result})
+
+# DELETE CUSTOMER
+
+@app.get("/customers/delete")
+def show_delete_customer_form(request: Request):
+    return templates.TemplateResponse(request, "delete_customer.html")
 
 @app.post("/customers/delete")
 def delete_customer(user: UserDelete, request: Request):
     result = database.delete_customer(user)
     return templates.TemplateResponse(request, "delete_customer.html", {"result": result})
 
+
+# SEARCH CUSTOMER
+
+@app.get("/customers/search")
+def show_search_customer_form(request: Request):
+    return templates.TemplateResponse(request, "search_customer.html")
 
 @app.post("/customers/search")
 def search_customers(user: UserSearch, request: Request):
