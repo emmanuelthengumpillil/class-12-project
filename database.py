@@ -29,7 +29,7 @@ def search_customer(user):
 def connect_sql(query):
     connector_obj = Ms.connect(host=crd.host, user=crd.user, password=crd.password, database=crd.database)
     if connector_obj.is_connected():
-        cursor_obj = connector_obj.cursor()
+        cursor_obj = connector_obj.cursor(dictionary=True)
         cursor_obj.execute(query)
         if query.strip().lower().split()[0] in ['select', 'show', 'desc', 'describe']:
             result = cursor_obj.fetchall()
