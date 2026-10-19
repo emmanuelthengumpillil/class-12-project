@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 import database
 
@@ -20,10 +21,6 @@ class UserCreate(BaseModel):
     phone: str = Field(min_length=10, max_length=12)
     email:str
 
-class UserDelete(BaseModel):
-    name: str
-    phone: str =  Field(min_length=10, max_length=12)
-    email: str
 
 class UserSearch(BaseModel):
     name : str
@@ -39,27 +36,42 @@ def show_all(request: Request):
     return templates.TemplateResponse(request, "customer.html", {"result": result})
 
 # ADD CUSTOMER
-
 @app.get("/customers/add")
 def show_add_customer_form(request: Request):
     return templates.TemplateResponse(request, "add_customer.html")
 
 @app.post("/customers/add")
-def add_customer(user: UserCreate, request: Request):
-    result = database.add_customer(user)
-    return templates.TemplateResponse(request, "add_customer.html", {"result": result})
+def add_customer(request: Request,
+                 name:str = Form(...),
+                 phone: str = Form(...),
+                 email: str = Form(...)):
+    values = {"name": name, "phone": phone, "email": email}
+    result = database.add_customer(values)
+    return RedirectResponse(url="/customers", status_code=303)
+
 
 # DELETE CUSTOMER
+@app.post("/customers/delete/{id}")
+def delete_customer(id: int, request: Request):
+    database.delete_customer(id)
+    return RedirectResponse(url="/customers", status_code=303)
 
-@app.get("/customers/delete")
-def show_delete_customer_form(request: Request):
-    return templates.TemplateResponse(request, "delete_customer.html")
 
-@app.post("/customers/delete")
-def delete_customer(user: UserDelete, request: Request):
-    result = database.delete_customer(user)
-    return templates.TemplateResponse(request, "delete_customer.html", {"result": result})
+# EDIT CUSTOMER
+@app.get("/customers/edit/{id}")
+def show_edit_customer_form(request: Request, id:int):
+    values = {'id': id}
+    values = database.search_customers_by_id(values)
+    return templates.TemplateResponse(request, "edit_customers.html", {'values': values[0]})
 
+@app.post("/customers/edit/{id}")
+def edit_customer(request: Request, id: int,
+                  name: str = Form('...'),
+                  phone: str = Form('...'),
+                  email: str = Form('...')):
+    values = {'id': id, 'name': name, 'phone': phone, 'email': email}
+    database.edit_customer(values)
+    return RedirectResponse(url="/customers", status_code=303)
 
 # SEARCH CUSTOMER
 
@@ -71,6 +83,7 @@ def show_search_customer_form(request: Request):
 def search_customers(user: UserSearch, request: Request):
     result = database.search_customer(user)
     return templates.TemplateResponse(request, "search_customer.html", {"result": result})
+
 
 
 @app.get("/showtables")

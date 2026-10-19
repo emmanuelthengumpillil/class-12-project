@@ -5,8 +5,8 @@
 {% endblock title %}
 
 {% block content %}
-    <main class="min-w-0 flex-1 overflow-auto bg-blue-500 p-4">
-        <nav class="justify-center align center flex sticky top-0 h-10 p-0.5 bg-amber-100 w-full">
+    <main class="min-w-0 flex-1 overflow-hidden bg-blue-500 p-4">
+        <nav class="justify-center items-center flex sticky top-0 h-10 p-0.5 bg-amber-100 w-full">
             <div class="relative flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute left-2 w-5 h-5 text-zinc-400 pointer-events-none" >
                 <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
@@ -20,9 +20,14 @@
             <span class="absolute right-3 text-xs text-zinc-500 font-medium pointer-events-none">12 results</span>
             </div>
         </nav>
+
         <div class="h-full  bg-red-100">
+            <div class="flex items-center justify-between p-4">
+                <h1 class="text-3xl font-bold text-zinc-900">Customer</h1>
+                <a href="/customers/add" class="rounded-lg border border-gray-700 bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-gray-900 hover:bg-gray-900 focus:ring-2 focus:ring-gray-200 focus:outline-none"> Add Customer </a>
+            </div>
             <table class="w-full border-collapse text-left">
-                <thead class="sticky top-10  bg-zinc-100">
+                <thead class="sticky top-10 bg-zinc-100">
                     <tr>
                     <th class="border px-6 py-4 font-medium text-zinc-900">Id</th>
                     <th class="border px-6 py-4 font-medium text-zinc-900">Name</th>
@@ -44,7 +49,12 @@
                             <td class="px-6 py-4">{{ line.date_modified }}</td>
                             <td class="px-6 py-4">State</td>
                             <td class="flex justify-center gap-4 px-6 py-4 font-medium">
-                                <a href="">Delete</a><a href="" class="text-primary-700">Edit</a>
+                                <form action="/customers/delete/{{ line.id }}" method="post">
+                                    <button type="submit" class="text-zinc-800 hover:text-red-600 font-medium text-sm">Delete</button>
+                                </form>
+                                <form action="/customers/edit/{{ line.id }}" method="get">
+                                    <button type="submit" class="text-zinc-700 hover:text-blue-600">Edit</button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

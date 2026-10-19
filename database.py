@@ -2,10 +2,11 @@ import mysql.connector as Ms
 import datetime
 import credits as crd
 
+# ADD CUSTOMER
 def add_customer(user):
     now = datetime.datetime.now()
     formatted_date = now.strftime(r"%Y-%m-%d")
-    values = {"name":user.name, "phone":user.phone, "email":user.email, "date":formatted_date}
+    values = {"name":user['name'], "phone":user['phone'], "email":user['email'], "date":formatted_date}
     table_name = 'customers'
 
     query1 = "Insert into {} (name, phone, email, date_modified) values('{}', '{}', '{}', '{}')".format(table_name, values['name'], values['phone'], values['email'], values['date'])
@@ -13,22 +14,33 @@ def add_customer(user):
     print("Saved successfully")
     return values
 
-def delete_customer(user):
-    values = {"name":user.name, "phone":user.phone, "email":user.email}
+# DELETE CUSTOMER
+def delete_customer(id):
     table_name = 'customers'
-
-    query = "delete from {} where name = '{}' and phone = '{}' and email = '{}'".format(table_name, values['name'], values['phone'], values['email'])
+    query = "delete from {} where id = '{}'".format(table_name, id)
     connect_sql(query)
-    show_from_sql(values['table'])
-    print("Removed successfully")
+    show_from_sql()
+    return "Removed Successfully"
+
+# EDIT USER
+def edit_customer(values):
+    table_name = "customers"
+    query = "Update {} set name = '{}', phone = {}, email = '{}' where id = {}".format(table_name, values['name'], values['phone'], values['email'], values['id'])
+    connect_sql(query)
     return values
 
-def search_customer(user):
+# SEARCH USER
+def search_customers_by_name(values):
     table_name = 'customers'
-
-    query = "Select * from {} where name like '{}%'".format(table_name, user.name)
+    query = "Select * from {} where name like '{}%'".format(table_name, values['name'])
     result = connect_sql(query)
     print(result)
+    return result
+
+def search_customers_by_id(values):
+    table_name = 'customers'
+    query = "Select * from {} where id = {}".format(table_name, values['id'])
+    result = connect_sql(query)
     return result
 
 def connect_sql(query):

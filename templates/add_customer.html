@@ -1,11 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-        
-    </body>
-</html>
+{% extends "base_crm.html" %}
+
+{% block title %}
+    CRM - Add Customer
+{% endblock title %}
+
+{% block content %}
+<div class="flex flex-1 flex-col items-center justify-center">
+    <form action="/customers/add" method="POST" class="w-full max-w-md items-center shadow-lg rounded-xl border border-zinc-200 bg-red-200 px-4 py-6 flex flex-col gap-2">
+        <h1 class="text-3xl font-bold text-zinc-900 ">Add Customer</h1>
+        <div class="flex flex-col w-full gap-1">
+            <label>Name</label>
+            <input name="name" placeholder="Enter your name" class=" rounded-md border-2 bg-white px-2 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required/>
+        </div>
+        <div class="flex flex-col w-full gap-1">
+            <label>Phone</label>
+            <input name="phone" type="text" placeholder="Enter your phone" class="rounded-md border-2 bg-white px-2 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required/>
+        </div>
+        <div class="flex flex-col w-full gap-1">
+            <label>Email</label>
+            <input name="email" placeholder="Enter your email" type="email" class="rounded-md border-2 bg-white px-2 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required/>
+        </div>
+        <button type="submit"  class="w-full rounded-lg border border-blue-500 bg-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 focus:ring focus:ring-blue-200 disabled:cursor-not-allowed disabled:border-blue-300 disabled:bg-blue-300">Add User</button>
+    </form>
+</div>
+{% endblock content %}
