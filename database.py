@@ -7,7 +7,7 @@ def add_customer(user):
     formatted_date = now.strftime(r"%Y-%m-%d")
     values = {"name":user.name, "phone":user.phone, "email":user.email, "date":formatted_date}
 
-    query1 = "Insert into customer values({}, '{}', '{}', '{}', '{}')".format(values['id'], values['name'], values['phone'], values['email'], values['date'])
+    query1 = "Insert into customer (name, phone, email, date_modified) values('{}', '{}', '{}', '{}')".format(values['name'], values['phone'], values['email'], values['date'])
     connect_sql(query1)
     print("Saved successfully")
     return values
