@@ -35,8 +35,7 @@ def read_root(request: Request):
 
 @app.get("/customers")
 def show_all(request: Request):
-    table = "customer"
-    result = database.show_from_sql(table)
+    result = database.show_from_sql()
     return templates.TemplateResponse(request, "customer.html", {"result": result})
 
 # ADD CUSTOMER
