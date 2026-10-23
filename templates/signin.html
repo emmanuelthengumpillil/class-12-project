@@ -5,5 +5,20 @@
 {% endblock title %}
 
 {% block content %}
-    <div></div>
+    <div>
+        <div>
+            <h1>Welcome to CRM</h1>
+            <p>Enter your email below to sign in to your account</p>
+        </div>
+        <form>
+            <div>
+                <label>Email</label>
+                <input required type="email" placeholder="name@example.com">
+            </div>
+            <div>
+                <label>Password</label>
+                <input type="password" required>
+            </div>
+        </form>
+    </div>
 {% endblock content %}

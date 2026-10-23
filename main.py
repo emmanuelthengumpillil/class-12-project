@@ -14,7 +14,7 @@ app = FastAPI(
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# database.setup_sql()
+database.setup_tables()
 
 class UserCreate(BaseModel):
     name: str
