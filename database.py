@@ -75,7 +75,7 @@ def setup_sql():
 
 def show_from_sql():
     table_name = 'customers'
-    query = "Select * from {}".format(table_name)
+    query = "Select * from {} order by id".format(table_name)
     content = connect_sql(query)
     return content
 
