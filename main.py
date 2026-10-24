@@ -32,6 +32,8 @@ class UserSignup(BaseModel):
     name: str
     email: str
     phone: str
+    company_name: str
+    password: str
 
 
 @app.get("/")
@@ -102,14 +104,26 @@ def show_signin_form(request: Request):
     return templates.TemplateResponse(request, "signin.html")
 
 @app.post("/signin")
-def signin(user: UserSignin ,request: Request):
+def signin(user: UserSignin):
     values = {"email": user.email, "password": user.password, 'table': 'users'}
     row = database.signin_customer(values)
     if row:
         return RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
-    return RedirectResponse(url="/customers/signup?message=User+not+found", status_code=404)
+    return RedirectResponse(url="/signin?message=User+not+found", status_code=404)
 
 
+# SIGNUP
+@app.get('/signup')
+def show_signup_form(request: Request):
+    return templates.TemplateResponse(request, 'signup.html')
+
+@app.post('/signup')
+def signup(user: UserSignup):
+    values = {'id': user.id, 'name': user.name, 'email':user.email, 'table': 'users'}
+    row = database.signup_customer(values)
+    if row:
+        signin(values)
+    return RedirectResponse(url="/signup?message=Error+in+signing+up", status_code=404)
 
 
 @app.get("/showtables")

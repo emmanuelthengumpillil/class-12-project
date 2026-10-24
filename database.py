@@ -60,9 +60,12 @@ def signin_customer(values):
 
 # SIGNUP 
 def signup_customer(user):
-    email = user.email
-    password = user.password
-    query = "insert into users values('{}','{}')".format(email, password)
+    name = user['name']
+    email = user['email']
+    password = user['password']
+    phone = user['phone']
+    company_name = user['company_name']
+    query = "insert into users (name, email, phone, password, company_name) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
     result = connect_sql(query)
     return result
 
@@ -78,7 +81,7 @@ def setup_database():
 
 def setup_tables():
     query1 = "Create table if not exists customers(id int auto_increment primary key, name varchar(75) not null, phone char(12) not null, email varchar(200) not null, date_modified date not null)"
-    query2 = "Create table if not exists users(id int auto_increment primary key, name varchar(200) not null, email varchar(200) not null, phone char(12) not null, date_joined date)"
+    query2 = "Create table if not exists users(id int auto_increment primary key, name varchar(200) not null, email varchar(200) not null, phone char(12) not null, date_joined date, company varchar(200), password char(200) not null)"
     connect_sql(query1)
     connect_sql(query2)
     message = "MySql setup successfull"
