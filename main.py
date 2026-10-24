@@ -21,19 +21,30 @@ class UserCreate(BaseModel):
     phone: str = Field(min_length=10, max_length=12)
     email:str
 
-
 class UserSearch(BaseModel):
     name : str
+
+class UserSignin(BaseModel):
+    email: str
+    password: str
+
+class UserSignup(BaseModel):
+    name: str
+    email: str
+    phone: str
+
 
 @app.get("/")
 def read_root(request: Request):
     message = {"message":"Welcome to Sales Force Crm"}
     return templates.TemplateResponse(request, "home.html", {"posts": message})
 
+# SELECT
 @app.get("/customers")
 def show_all(request: Request):
     result = database.show_from_sql()
     return templates.TemplateResponse(request, "customer.html", {"result": result})
+
 
 # ADD CUSTOMER
 @app.get("/customers/add")
@@ -45,7 +56,7 @@ def add_customer(request: Request,
                  name:str = Form(...),
                  phone: str = Form(...),
                  email: str = Form(...)):
-    values = {"name": name, "phone": phone, "email": email}
+    values = {"name": name, "phone": phone, "email": email, 'table':'customers'}
     result = database.add_customer(values)
     return RedirectResponse(url="/customers", status_code=303)
 
@@ -60,7 +71,7 @@ def delete_customer(id: int, request: Request):
 # EDIT CUSTOMER
 @app.get("/customers/edit/{id}")
 def show_edit_customer_form(request: Request, id:int):
-    values = {'id': id}
+    values = {'id': id, 'table': 'customers'}
     values = database.search_customers_by_id(values)
     return templates.TemplateResponse(request, "edit_customers.html", {'values': values[0]})
 
@@ -69,12 +80,12 @@ def edit_customer(request: Request, id: int,
                   name: str = Form('...'),
                   phone: str = Form('...'),
                   email: str = Form('...')):
-    values = {'id': id, 'name': name, 'phone': phone, 'email': email}
+    values = {'id': id, 'name': name, 'phone': phone, 'email': email, 'table': 'customers'}
     database.edit_customer(values)
     return RedirectResponse(url="/customers", status_code=303)
 
-# SEARCH CUSTOMER
 
+# SEARCH CUSTOMER
 @app.get("/customers/search")
 def show_search_customer_form(request: Request):
     return templates.TemplateResponse(request, "search_customer.html")
@@ -83,6 +94,21 @@ def show_search_customer_form(request: Request):
 def search_customers(user: UserSearch, request: Request):
     result = database.search_customer(user)
     return templates.TemplateResponse(request, "search_customer.html", {"result": result})
+
+
+# SIGN IN 
+@app.get("/signin")
+def show_signin_form(request: Request):
+    return templates.TemplateResponse(request, "signin.html")
+
+@app.post("/signin")
+def signin(user: UserSignin ,request: Request):
+    values = {"email": user.email, "password": user.password, 'table': 'users'}
+    row = database.signin_customer(values)
+    if row:
+        return RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
+    return RedirectResponse(url="/customers/signup?message=User+not+found", status_code=404)
+
 
 
 
