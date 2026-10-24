@@ -10,16 +10,19 @@
             <div class="text-center">
                 <h1 class="font-medium text-3xl">Welcome to CRM</h1>
                 <p class="font-normal">Enter your email below to sign in to your account</p>
+                {% if message %}
+                    <p class="font-medium text-red-500 text-lg">{{ message }}</p>
+                {% endif %}
             </div>
-            <form action="/signip" method="post" class="flex flex-col gap-7">
+            <form action="/signin" method="post" class="flex flex-col gap-7">
                                 <div class="flex flex-col gap-3">
                     <div class="flex flex-col">
                         <label>Email</label>
-                        <input required type="email" placeholder="name@example.com" class="h-8 px-2 border border-zinc-300 rounded-md">
+                        <input required type="email" name="email" placeholder="name@example.com" class="h-8 px-2 border border-zinc-300 rounded-md">
                     </div>
                     <div class="flex flex-col">
                         <label>Password</label>
-                        <input type="password" placeholder="Password" required class="px-2 h-8 border border-zinc-300 rounded-md">
+                        <input required type="password" name="password" placeholder="Password" class="px-2 h-8 border border-zinc-300 rounded-md">
                     </div>
                 </div>
                 <button type="submit" class="text-white bg-blue-500 cursor-pointer hover:bg-blue-600 rounded-md shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Sign In</button>

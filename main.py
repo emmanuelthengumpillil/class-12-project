@@ -16,24 +16,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 database.setup_tables()
 
-class UserCreate(BaseModel):
-    name: str
-    phone: str = Field(min_length=10, max_length=12)
-    email:str
 
 class UserSearch(BaseModel):
     name : str
 
-class UserSignin(BaseModel):
-    email: str
-    password: str
 
-class UserSignup(BaseModel):
-    name: str
-    email: str
-    phone: str
-    company_name: str
-    password: str
 
 
 @app.get("/")
@@ -104,26 +91,31 @@ def show_signin_form(request: Request):
     return templates.TemplateResponse(request, "signin.html")
 
 @app.post("/signin")
-def signin(user: UserSignin):
-    values = {"email": user.email, "password": user.password, 'table': 'users'}
+def signin(email: str = Form(...),
+           password: str = Form(...)):
+    values = {"email": email, "password": password, 'table': 'users'}
     row = database.signin_customer(values)
     if row:
         return RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
-    return RedirectResponse(url="/signin?message=User+not+found", status_code=404)
+    return RedirectResponse(url="/signin?message=User+not+found", status_code=303)
 
 
 # SIGNUP
 @app.get('/signup')
-def show_signup_form(request: Request):
-    return templates.TemplateResponse(request, 'signup.html')
+def show_signup_form(request: Request, message: str = None):
+    return templates.TemplateResponse(request, 'signup.html', {'message': message})
 
 @app.post('/signup')
-def signup(user: UserSignup):
-    values = {'id': user.id, 'name': user.name, 'email':user.email, 'table': 'users'}
+def signup(name: str = Form(...),
+           email: str = Form(...),
+           phone: str = Form(...),
+           company_name: str = Form(...),
+           password: str = Form(...)):
+    values = {'name': name, 'email':email, 'phone': phone, 'company_name': company_name, 'password': password, 'table': 'users'}
     row = database.signup_customer(values)
     if row:
-        signin(values)
-    return RedirectResponse(url="/signup?message=Error+in+signing+up", status_code=404)
+        return RedirectResponse(url="/signin?message=Signup+successful.+Please+sign+in.", status_code=303)
+    return RedirectResponse(url="/signup?message=Error+in+signing+up", status_code=303)
 
 
 @app.get("/showtables")

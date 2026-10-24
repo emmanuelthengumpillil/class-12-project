@@ -65,9 +65,9 @@ def signup_customer(user):
     password = user['password']
     phone = user['phone']
     company_name = user['company_name']
-    query = "insert into users (name, email, phone, password, company_name) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
+    query = "insert into users (name, email, phone, password, company) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
     result = connect_sql(query)
-    return result
+    return True
 
 # SETUP
 def setup_database():

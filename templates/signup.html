@@ -9,28 +9,32 @@
         <div class="border border-zinc-300 shadow-xl px-8 py-10 rounded-2xl flex flex-col gap-4">
             <div class="text-center">
                 <h1 class="font-medium text-3xl">Create your CRM enterprise account</h1>
+                {% if message %}
+                    <p class="font-medium text-red-500 text-lg">{{ message }}</p>
+                {% endif %}
+
             </div>
             <form action="/signup" method="post" class="flex flex-col gap-7">
                 <div class="flex flex-col gap-3">
                     <div class="flex flex-col">
                         <label>Name</label>
-                        <input required type="text" placeholder="name" class="h-8 px-2 border border-zinc-300 rounded-md">
+                        <input required type="text" name="name" placeholder="name" class="h-8 px-2 border border-zinc-300 rounded-md">
                     </div>
                     <div class="flex flex-col">
                         <label>Phone</label>
-                        <input required type="text" placeholder="9876543210" class="h-8 px-2 border border-zinc-300 rounded-md">
+                        <input required type="text" name="phone" placeholder="9876543210" class="h-8 px-2 border border-zinc-300 rounded-md">
                     </div>
                     <div class="flex flex-col">
                         <label>Email</label>
-                        <input required type="email" placeholder="name@example.com" class="h-8 px-2 border border-zinc-300 rounded-md">
+                        <input required type="email" name="email" placeholder="name@example.com" class="h-8 px-2 border border-zinc-300 rounded-md">
                     </div>
                     <div class="flex flex-col">
                         <label>Company name</label>
-                        <input required type="text" placeholder="EA groups inc" class="h-8 px-2 border border-zinc-300 rounded-md">
+                        <input type="text" name="company_name" placeholder="EA groups inc" class="h-8 px-2 border border-zinc-300 rounded-md">
                     </div>
                     <div class="flex flex-col">
                         <label>Password</label>
-                        <input type="password" placeholder="Password" required class="px-2 h-8 border border-zinc-300 rounded-md">
+                        <input required type="password" placeholder="Password" name="password" class="px-2 h-8 border border-zinc-300 rounded-md">
                     </div>
                 </div>
                 <button type="submit" class="text-white bg-blue-500 cursor-pointer hover:bg-blue-600 rounded-md shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Sign Up</button>
