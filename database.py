@@ -50,11 +50,13 @@ def search_customers_by_email(values):
 
 # SIGNIN
 def signin_customer(values):
-    email = values['email']
     password = values['password']
     value = search_customers_by_email(values)
+    print(value)
     if value:
-        return True
+        if value[0]['password'] == password:
+            return value[0]
+        return False
     else:
         return False
 
@@ -65,9 +67,11 @@ def signup_customer(user):
     password = user['password']
     phone = user['phone']
     company_name = user['company_name']
-    query = "insert into users (name, email, phone, password, company) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
-    result = connect_sql(query)
-    return True
+    if search_customers_by_email(user) == False:
+        query = "insert into users (name, email, phone, password, company) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
+        connect_sql(query)
+        return True
+    return False
 
 # SETUP
 def setup_database():

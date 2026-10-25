@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Response,Form, Cookie, Depends, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 import database
+import secrets
 
 app = FastAPI(
     title = "Sales Force CRM",
@@ -16,11 +17,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 database.setup_tables()
 
-
-class UserSearch(BaseModel):
-    name : str
-
-
+# GETTING COOKIES
+def get_current_user(session_token: str | None = Cookie(default=None)):
+    if session_token is None:
+        raise HTTPException(
+            status_code = 401,
+            message = "Not - authenticated please log in"
+        )
+    return session_token
 
 
 @app.get("/")
@@ -80,7 +84,8 @@ def show_search_customer_form(request: Request):
     return templates.TemplateResponse(request, "search_customer.html")
 
 @app.post("/customers/search")
-def search_customers(user: UserSearch, request: Request):
+def search_customers(name: str, 
+                     request: Request):
     result = database.search_customer(user)
     return templates.TemplateResponse(request, "search_customer.html", {"result": result})
 
@@ -91,9 +96,20 @@ def show_signin_form(request: Request):
     return templates.TemplateResponse(request, "signin.html")
 
 @app.post("/signin")
-def signin(email: str = Form(...),
+def signin(response: Response,
+           email: str = Form(...),
            password: str = Form(...)):
     values = {"email": email, "password": password, 'table': 'users'}
+
+    # Cookies
+    session_token = secrets.token_hex(100)
+    response.set_cookie(
+        key = "session_token",
+        value = session_token,
+        httponly = True,
+        max_age = 3600
+    )
+
     row = database.signin_customer(values)
     if row:
         return RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
@@ -115,7 +131,7 @@ def signup(name: str = Form(...),
     row = database.signup_customer(values)
     if row:
         return RedirectResponse(url="/signin?message=Signup+successful.+Please+sign+in.", status_code=303)
-    return RedirectResponse(url="/signup?message=Error+in+signing+up", status_code=303)
+    return RedirectResponse(url="/signup?message=User+already+exists", status_code=303)
 
 
 @app.get("/showtables")
