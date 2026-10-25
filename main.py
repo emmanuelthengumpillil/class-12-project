@@ -146,3 +146,9 @@ def show_tables(limit: int = None, request = Request):
 def desc_table(tablename):
     result = database.desc_table(tablename)
     return result
+
+
+@app.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(key="session_token")
+    return RedirectResponse(url="/signin?message=Logged+out+successfully")
