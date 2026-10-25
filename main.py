@@ -12,8 +12,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# GLobal variables
+templates.env.globals['username'] = 'Emmanuel'
+templates.env.globals['app_name'] = 'Zero Hour'
 
 database.setup_tables()
 
@@ -28,8 +33,7 @@ def get_current_user(session_token: str | None = Cookie(default=None)):
 
 @app.get("/")
 def read_root(request: Request, current_user: str = Depends(get_current_user)):
-    message = {"message":"Welcome to Sales Force Crm"}
-    return templates.TemplateResponse(request, "home.html", {"posts": message})
+    return templates.TemplateResponse(request, "home.html")
 
 # SELECT
 @app.get("/customers")
@@ -99,12 +103,15 @@ def show_signin_form(request: Request):
 def signin(email: str = Form(...),
            password: str = Form(...)):
     values = {"email": email, "password": password, 'table': 'users'}
-    row = database.signin_customer(values)
-    
-    if not row:
-        return RedirectResponse(url="/signin?message=User+not+found", status_code=303)
+    is_signedin = database.signin_customer(values)
+    print(is_signedin)
+    if not is_signedin['status']:
+        if is_signedin['message'] == 'password_error':
+            return RedirectResponse(url="/signin?message=Incorrect+Password", status_code=303)
+        else:
+            return RedirectResponse(url="/signin?message=User+not+found", status_code=303)
 
-    response = RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
+    response = RedirectResponse(url="/?message=Signin+successfull", status_code=303)
 
     session_token = secrets.token_hex(100)
     response.set_cookie(
@@ -115,9 +122,8 @@ def signin(email: str = Form(...),
         max_age = 3600)
 
     return response
+
     
-
-
 # SIGNUP
 @app.get('/signup')
 def show_signup_form(request: Request, message: str = None):

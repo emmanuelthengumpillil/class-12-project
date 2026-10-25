@@ -52,13 +52,13 @@ def search_customers_by_email(values):
 def signin_customer(values):
     password = values['password']
     value = search_customers_by_email(values)
-    print(value)
     if value:
         if value[0]['password'] == password:
-            return value[0]
-        return False
+            increment_signin_count(values)
+            return {'result': value[0], 'message': 'success', 'status': True}
+        return {'status': False, 'message':'password_error'}
     else:
-        return False
+        return {'status': False, 'message': 'user_not_found'}
 
 # SIGNUP 
 def signup_customer(user):
@@ -70,7 +70,7 @@ def signup_customer(user):
     exisiting_user = search_customers_by_email(user)
     if not exisiting_user:
         query = "insert into users (name, email, phone, password, company) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
-        result = connect_sql(query)
+        connect_sql(query)
         return True
     return False
 
@@ -86,7 +86,7 @@ def setup_database():
 
 def setup_tables():
     query1 = "Create table if not exists customers(id int auto_increment primary key, name varchar(75) not null, phone char(12) not null, email varchar(200) not null, date_modified date not null)"
-    query2 = "Create table if not exists users(id int auto_increment primary key, name varchar(200) not null, email varchar(200) not null, phone char(12) not null, date_joined date, company varchar(200), password char(200) not null)"
+    query2 = "Create table if not exists users(id int auto_increment primary key, name varchar(200) not null, email varchar(200) not null, phone char(12) not null, date_joined datetime default CURRENT_TIMESTAMP, company varchar(200), password char(200) not null, signin_count int default 0 not null, is_active bool default False)"
     connect_sql(query1)
     connect_sql(query2)
     message = "MySql setup successfull"
@@ -126,3 +126,12 @@ def connect_sql(query):
         message = "Connection Failed"
         return message
 
+def signin_count(values):
+    query = "select signin_count from {} where email = '{}'".format(values['table'], values['email'])
+    result = connect_sql(query)
+    return result
+
+def increment_signin_count(values):
+    query = "update {} set signin_count = signin_count + 1 where email like '{}'".format(values['table'], values['email'])
+    result = connect_sql(query)
+    return result
