@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Response,Form, Cookie, Depends, HTTPException, status
+from fastapi import FastAPI, Request,Form, Cookie, Depends, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
@@ -22,33 +22,33 @@ def get_current_user(session_token: str | None = Cookie(default=None)):
     if session_token is None:
         raise HTTPException(
             status_code = 401,
-            message = "Not - authenticated please log in"
-        )
+            detail = "Not - authenticated please log in")
     return session_token
 
 
 @app.get("/")
-def read_root(request: Request):
+def read_root(request: Request, current_user: str = Depends(get_current_user)):
     message = {"message":"Welcome to Sales Force Crm"}
     return templates.TemplateResponse(request, "home.html", {"posts": message})
 
 # SELECT
 @app.get("/customers")
-def show_all(request: Request):
+def show_all(request: Request, current_user: str = Depends(get_current_user)):
     result = database.show_from_sql()
     return templates.TemplateResponse(request, "customer.html", {"result": result})
 
 
 # ADD CUSTOMER
 @app.get("/customers/add")
-def show_add_customer_form(request: Request):
+def show_add_customer_form(request: Request, current_user: str = Depends(get_current_user)):
     return templates.TemplateResponse(request, "add_customer.html")
 
 @app.post("/customers/add")
 def add_customer(request: Request,
                  name:str = Form(...),
                  phone: str = Form(...),
-                 email: str = Form(...)):
+                 email: str = Form(...),
+                 current_user: str = Depends(get_current_user)):
     values = {"name": name, "phone": phone, "email": email, 'table':'customers'}
     result = database.add_customer(values)
     return RedirectResponse(url="/customers", status_code=303)
@@ -56,14 +56,14 @@ def add_customer(request: Request,
 
 # DELETE CUSTOMER
 @app.post("/customers/delete/{id}")
-def delete_customer(id: int, request: Request):
+def delete_customer(id: int, request: Request, current_user: str = Depends(get_current_user)):
     database.delete_customer(id)
     return RedirectResponse(url="/customers", status_code=303)
 
 
 # EDIT CUSTOMER
 @app.get("/customers/edit/{id}")
-def show_edit_customer_form(request: Request, id:int):
+def show_edit_customer_form(request: Request, id:int, current_user: str = Depends(get_current_user)):
     values = {'id': id, 'table': 'customers'}
     values = database.search_customers_by_id(values)
     return templates.TemplateResponse(request, "edit_customers.html", {'values': values[0]})
@@ -72,7 +72,8 @@ def show_edit_customer_form(request: Request, id:int):
 def edit_customer(request: Request, id: int,
                   name: str = Form('...'),
                   phone: str = Form('...'),
-                  email: str = Form('...')):
+                  email: str = Form('...'),
+                  current_user: str = Depends(get_current_user),):
     values = {'id': id, 'name': name, 'phone': phone, 'email': email, 'table': 'customers'}
     database.edit_customer(values)
     return RedirectResponse(url="/customers", status_code=303)
@@ -80,12 +81,11 @@ def edit_customer(request: Request, id: int,
 
 # SEARCH CUSTOMER
 @app.get("/customers/search")
-def show_search_customer_form(request: Request):
+def show_search_customer_form(request: Request, current_user: str = Depends(get_current_user)):
     return templates.TemplateResponse(request, "search_customer.html")
 
 @app.post("/customers/search")
-def search_customers(name: str, 
-                     request: Request):
+def search_customers(name: str, request: Request, current_user: str = Depends(get_current_user)):
     result = database.search_customer(user)
     return templates.TemplateResponse(request, "search_customer.html", {"result": result})
 
@@ -96,24 +96,26 @@ def show_signin_form(request: Request):
     return templates.TemplateResponse(request, "signin.html")
 
 @app.post("/signin")
-def signin(response: Response,
-           email: str = Form(...),
+def signin(email: str = Form(...),
            password: str = Form(...)):
     values = {"email": email, "password": password, 'table': 'users'}
+    row = database.signin_customer(values)
+    
+    if not row:
+        return RedirectResponse(url="/signin?message=User+not+found", status_code=303)
 
-    # Cookies
+    response = RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
+
     session_token = secrets.token_hex(100)
     response.set_cookie(
         key = "session_token",
         value = session_token,
         httponly = True,
-        max_age = 3600
-    )
+        secure = False,
+        max_age = 3600)
 
-    row = database.signin_customer(values)
-    if row:
-        return RedirectResponse(url="/customers?message=Signin+successfull", status_code=303)
-    return RedirectResponse(url="/signin?message=User+not+found", status_code=303)
+    return response
+    
 
 
 # SIGNUP
@@ -128,14 +130,15 @@ def signup(name: str = Form(...),
            company_name: str = Form(...),
            password: str = Form(...)):
     values = {'name': name, 'email':email, 'phone': phone, 'company_name': company_name, 'password': password, 'table': 'users'}
-    row = database.signup_customer(values)
-    if row:
+    status = database.signup_customer(values)
+    if status:
         return RedirectResponse(url="/signin?message=Signup+successful.+Please+sign+in.", status_code=303)
-    return RedirectResponse(url="/signup?message=User+already+exists", status_code=303)
+    else:
+        return RedirectResponse(url="/signup?message=User+already+exists", status_code=303)
 
 
 @app.get("/showtables")
-def show_tables(limit: int = None, request = Request):
+def show_tables(limit: int = None, request = Request, current_user: str = Depends(get_current_user)):
     result = list(database.show_tables())
     if limit:
         result = list(database.show_tables())[:limit]
@@ -148,7 +151,8 @@ def desc_table(tablename):
     return result
 
 
-@app.post("/logout")
-def logout(response: Response):
+@app.get("/logout")
+def logout(current_user: str = Depends(get_current_user)):
+    response = RedirectResponse(url="/signin?message=Logged+out+successfully", status_code=status.HTTP_303_SEE_OTHER)
     response.delete_cookie(key="session_token")
-    return RedirectResponse(url="/signin?message=Logged+out+successfully")
+    return response

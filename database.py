@@ -67,9 +67,10 @@ def signup_customer(user):
     password = user['password']
     phone = user['phone']
     company_name = user['company_name']
-    if search_customers_by_email(user) == False:
+    exisiting_user = search_customers_by_email(user)
+    if not exisiting_user:
         query = "insert into users (name, email, phone, password, company) values('{}','{}','{}','{}','{}')".format(name, email, phone, password, company_name)
-        connect_sql(query)
+        result = connect_sql(query)
         return True
     return False
 
