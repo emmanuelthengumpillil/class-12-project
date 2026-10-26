@@ -96,8 +96,8 @@ def search_customers(name: str, request: Request, current_user: str = Depends(ge
 
 # SIGN IN 
 @app.get("/signin")
-def show_signin_form(request: Request):
-    return templates.TemplateResponse(request, "signin.html")
+def show_signin_form(request: Request, message: str = None):
+    return templates.TemplateResponse(request, "signin.html", {'message': message})
 
 @app.post("/signin")
 def signin(email: str = Form(...),
