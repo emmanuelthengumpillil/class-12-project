@@ -5,6 +5,8 @@ from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 import database
 import secrets
+import graph
+
 
 app = FastAPI(
     title = "Sales Force CRM",
@@ -33,7 +35,9 @@ def get_current_user(session_token: str | None = Cookie(default=None)):
 
 @app.get("/")
 def read_root(request: Request, current_user: str = Depends(get_current_user)):
-    return templates.TemplateResponse(request, "home.html")
+    chart_url = graph.usercount_analysis()
+    no_of_customers = database.no_of_users()[0]['count']
+    return templates.TemplateResponse(request, "home.html", {'chart_url': chart_url, 'result': no_of_customers})
 
 # SELECT
 @app.get("/customers")

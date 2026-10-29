@@ -7,5 +7,9 @@
 {% block content %}
     <div>
         <h1>Home</h1>
+        <div class="p-6 rounded-lg shadow-md h-30 w-50">
+            <h2 class="text-lg font-semibold text-zinc-800">No fo Customers created:- {{ result }}</h2>
+            <img src="data:image/png;base64,{{ chart_url }}" alt="Users Count graph" class="w-full">
+        </div>
     </div>
 {% endblock content %}

@@ -99,6 +99,12 @@ def show_from_sql():
     content = connect_sql(query)
     return content
 
+def no_of_users():
+    table_name = 'customers'
+    query = "Select count(*) as count from {} order by id".format(table_name)
+    content = connect_sql(query)
+    return content
+
 def show_tables():
     query = "show tables"
     result = connect_sql(query)
