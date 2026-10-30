@@ -9,7 +9,7 @@ import graph
 
 
 app = FastAPI(
-    title = "Sales Force CRM",
+    title = "Zerohour CRM",
     description= "A Customer Relation Management System for Business",
     version="1.0.0"
 )
@@ -32,9 +32,12 @@ def get_current_user(session_token: str | None = Cookie(default=None)):
             detail = "Not - authenticated please log in")
     return session_token
 
-
 @app.get("/")
-def read_root(request: Request, current_user: str = Depends(get_current_user)):
+def landing_page(request: Request):
+    return templates.TemplateResponse(request, "landing.html")
+
+@app.get("/home")
+def home(request: Request, current_user: str = Depends(get_current_user)):
     chart_url = graph.usercount_analysis()
     no_of_customers = database.no_of_users()[0]['count']
     return templates.TemplateResponse(request, "home.html", {'chart_url': chart_url, 'result': no_of_customers})
