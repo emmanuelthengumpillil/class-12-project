@@ -7,13 +7,11 @@ import database
 import secrets
 import graph
 
-
 app = FastAPI(
     title = "Zerohour CRM",
     description= "A Customer Relation Management System for Business",
     version="1.0.0"
 )
-
 
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -91,15 +89,14 @@ def edit_customer(request: Request, id: int,
 
 
 # SEARCH CUSTOMER
-@app.get("/customers/search")
-def show_search_customer_form(request: Request, current_user: str = Depends(get_current_user)):
-    return templates.TemplateResponse(request, "search_customer.html")
-
-@app.post("/customers/search")
-def search_customers(name: str, request: Request, current_user: str = Depends(get_current_user)):
-    result = database.search_customer(user)
-    return templates.TemplateResponse(request, "search_customer.html", {"result": result})
-
+@app.post("/customers/search/")
+def search_customers(request: Request, name: str = Form(...), current_user: str = Depends(get_current_user)):
+    if name:
+        result = database.search_customers_by_name({'table':'customers' ,'name': name})
+        if result:
+            return templates.TemplateResponse(request, "customer.html", {"result": result, "name": name})  
+    result = database.show_from_sql()
+    return templates.TemplateResponse(request, 'customer.html', {"result": result,'message': 'User not found'})
 
 # SIGN IN 
 @app.get("/signin")

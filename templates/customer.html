@@ -7,19 +7,24 @@
 {% block content %}
     <main class="min-w-0 flex-1 overflow-auto bg-zinc-50 p-6">
         <nav class="justify-center items-center flex sticky top-0 h-10 p-0.5 bg-zinc-50 w-full">
-            <div class="relative flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute left-2 w-5 h-5 text-zinc-400 pointer-events-none" >
-                <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-            </svg>
-            <input 
-                type="text" 
-                placeholder="Search..." 
-                class="min-w-20 pl-9 pr-24 py-2 bg-white border border-zinc-800 rounded-xl text-sm text-zinc-900 placeholder-zinc-500"
-            />
-            <span class="absolute right-3 text-xs text-zinc-500 font-medium pointer-events-none">12 results</span>
+            <div class="flex items-center gap-4 w-full max-w-xl">
+            <form action="/customers/search" method="post" class="relative inline-flex items-center w-full max-w-md">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute left-3.5 w-4 h-4 text-zinc-400 pointer-events-none">
+                    <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                </svg>
+                <input type="text" name="name" placeholder="Enter your name..." required
+                    class="w-full pl-11 pr-20 py-2 bg-white border border-zinc-800 rounded-xl text-sm text-zinc-900 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-900"/>
+                <button type="submit" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-zinc-900 text-white rounded-lg text-xs font-medium hover:bg-zinc-700 transition-colors">
+                    Search
+                </button>
+            </form>
             </div>
         </nav>
-
+        {% if message %}
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
+            {{ message }}
+        </div>
+        {% endif %}
         <div class="bg-white rounded-2xl border border-zinc-200 overflow-hidden">
             <div class="flex items-center justify-between p-4">
                 <h1 class="text-3xl font-bold text-zinc-900">Customer</h1>
