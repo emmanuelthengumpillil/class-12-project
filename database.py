@@ -11,7 +11,6 @@ def add_customer(user):
 
     query1 = "Insert into {} (name, phone, email, date_modified) values('{}', '{}', '{}', '{}')".format(table_name, values['name'], values['phone'], values['email'], values['date'])
     connect_sql(query1)
-    print("Saved successfully")
     return values
 
 # DELETE CUSTOMER

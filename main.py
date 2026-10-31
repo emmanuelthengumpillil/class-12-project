@@ -111,14 +111,13 @@ def signin(email: str = Form(...),
            password: str = Form(...)):
     values = {"email": email, "password": password, 'table': 'users'}
     is_signedin = database.signin_customer(values)
-    print(is_signedin)
     if not is_signedin['status']:
         if is_signedin['message'] == 'password_error':
             return RedirectResponse(url="/signin?message=Incorrect+Password", status_code=303)
         else:
             return RedirectResponse(url="/signin?message=User+not+found", status_code=303)
 
-    response = RedirectResponse(url="/?message=Signin+successfull", status_code=303)
+    response = RedirectResponse(url="/home?message=Signin+successfull", status_code=303)
 
     session_token = secrets.token_hex(100)
     response.set_cookie(
