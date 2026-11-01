@@ -159,6 +159,10 @@ def desc_table(tablename):
     result = database.desc_table(tablename)
     return result
 
+@app.get("/profile")
+def show_profile_page(request: Request):
+    return templates.TemplateResponse(request, 'profile.html')
+
 
 @app.get("/logout")
 def logout(current_user: str = Depends(get_current_user)):
