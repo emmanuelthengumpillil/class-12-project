@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 import database
+import analysis
 import secrets
 import graph
 
@@ -36,10 +37,10 @@ def landing_page(request: Request):
 
 @app.get("/home")
 def home(request: Request, current_user: str = Depends(get_current_user)):
-    total_revenue = database.get_total_revenue()
-    total_expenses = database.get_total_expenses()
-    total_customers = database.get_total_customers()
-    total_profit = database.get_total_profit()
+    total_revenue = analysis.get_total_revenue()
+    total_expenses = analysis.get_total_expenses()
+    total_customers = analysis.get_total_customers()
+    total_profit = analysis.get_total_profit()
     data = {"total_revenue": total_revenue,
             "total_expenses": total_expenses,
             "total_customers": total_customers,
@@ -170,7 +171,8 @@ def desc_table(tablename):
 # PROFILE
 @app.get("/profile")
 def show_profile_page(request: Request, current_user: str = Depends(get_current_user)):
-    return templates.TemplateResponse(request, 'profile.html')
+    user = analysis.get_user()
+    return templates.TemplateResponse(request, 'profile.html', {'user': user})
 
 
 @app.get("/logout")
