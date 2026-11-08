@@ -5,11 +5,50 @@
 {% endblock title %}
 
 {% block content %}
-    <div>
-        <h1>Home</h1>
-        <div class="p-6 rounded-lg shadow-md h-30 w-50">
-            <h2 class="text-lg font-semibold text-zinc-800">No fo Customers created:- {{ result }}</h2>
-            <img src="data:image/png;base64,{{ chart_url }}" alt="Users Count graph" class="w-full">
-        </div>
-    </div>
+    <main class="min-w-0 flex-1">
+        <section class="mx-auto max-w-7xl p-5 md:p-8">
+            <div class="mb-7">
+                <h1 class="text-2xl font-bold text-slate-900">Home</h1>
+                <p class="mt-1 text-sm text-slate-500">Business Analysis</p>
+            </div>
+
+            <div class="space-y-5">
+                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm font-medium text-zinc-800">Total Profit</p>
+                        <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">Profit</span>
+                    </div>
+                    <h2 class="mt-5 text-3xl font-bold text-slate-900">{{ data.total_profit }}</h2>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-zinc-800">Total Revenue</p>
+                            <span class="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">Revenue</span>
+                        </div>
+                        <h2 class="mt-5 text-3xl font-bold text-slate-900">{{ data.total_revenue }}</h2>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-zinc-800">Total Expense</p>
+                            <span class="rounded-lg bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-600">Expenses</span>
+                        </div>
+                        <h2 class="mt-5 text-3xl font-bold text-slate-900">{{ data.total_expenses }}</h2>
+                        <p class="mt-2 text-xs text-slate-400">Total recorded expenses</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-zinc-800">Total Customers</p>
+                            <span class="rounded-lg bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">Customers</span>
+                        </div>
+                        <h2 class="mt-5 text-3xl font-bold text-slate-900">{{ data.total_customers}}</h2>
+                        <p class="mt-2 text-xs text-slate-400">Registered customers</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock content %}

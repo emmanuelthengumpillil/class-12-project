@@ -36,9 +36,15 @@ def landing_page(request: Request):
 
 @app.get("/home")
 def home(request: Request, current_user: str = Depends(get_current_user)):
-    chart_url = graph.usercount_analysis()
-    no_of_customers = database.no_of_users()[0]['count']
-    return templates.TemplateResponse(request, "home.html", {'chart_url': chart_url, 'result': no_of_customers})
+    total_revenue = database.get_total_revenue()
+    total_expenses = database.get_total_expenses()
+    total_customers = database.get_total_customers()
+    total_profit = database.get_total_profit()
+    data = {"total_revenue": total_revenue,
+            "total_expenses": total_expenses,
+            "total_customers": total_customers,
+            "total_profit": total_profit}
+    return templates.TemplateResponse(request, "home.html", {'data': data})
 
 # SELECT
 @app.get("/customers")
@@ -146,6 +152,7 @@ def signup(name: str = Form(...),
         return RedirectResponse(url="/signup?message=User+already+exists", status_code=303)
 
 
+
 @app.get("/showtables")
 def show_tables(limit: int = None, request = Request, current_user: str = Depends(get_current_user)):
     result = list(database.show_tables())
@@ -159,8 +166,10 @@ def desc_table(tablename):
     result = database.desc_table(tablename)
     return result
 
+
+# PROFILE
 @app.get("/profile")
-def show_profile_page(request: Request):
+def show_profile_page(request: Request, current_user: str = Depends(get_current_user)):
     return templates.TemplateResponse(request, 'profile.html')
 
 

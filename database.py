@@ -84,10 +84,14 @@ def setup_database():
     return message
 
 def setup_tables():
-    query1 = "Create table if not exists customers(id int auto_increment primary key, name varchar(75) not null, phone char(12) not null, email varchar(200) not null, date_modified date not null)"
+    query1 = "Create table if not exists customers(customer_id int auto_increment primary key, name varchar(75) not null, phone char(12) not null, email varchar(200) not null, date_modified date not null)"
     query2 = "Create table if not exists users(id int auto_increment primary key, name varchar(200) not null, email varchar(200) not null, phone char(12) not null, date_joined datetime default CURRENT_TIMESTAMP, company varchar(200), password char(200) not null, signin_count int default 0 not null, is_active bool default False)"
+    query3 = "Create table if not exists expenses(id int auto_increment primary key, customer_id int not null, amount decimal(10,2) not null, description char(200), expense_date datetime default CURRENT_TIMESTAMP, Foreign key (customer_id) references customers(id) on update cascade)"
+    query4 = "Create table if not exists revenue(id int auto_increment primary key, customer_id int not null, amount decimal(10,2) not null, description char(200), revenue_date datetime default CURRENT_TIMESTAMP, Foreign key (customer_id) references customers(id) on update cascade)"
     connect_sql(query1)
     connect_sql(query2)
+    connect_sql(query3)
+    connect_sql(query4)
     message = "MySql setup successfull"
     return message
 
@@ -140,3 +144,30 @@ def increment_signin_count(values):
     query = "update {} set signin_count = signin_count + 1 where email like '{}'".format(values['table'], values['email'])
     result = connect_sql(query)
     return result
+
+
+# GET TOTAL 
+
+def get_total_revenue():
+    query = "select sum(amount) as total_amount from revenue"
+    result = connect_sql(query)[0]['total_amount']
+    return result
+
+def get_total_expenses():
+    query = "select sum(amount) as total_amount from expenses"
+    result = connect_sql(query)[0]['total_amount']
+    return result
+
+def get_total_customers():
+    query = "select count(*) as count from customers"
+    result = connect_sql(query)[0]['count']
+    return result
+
+def get_total_profit():
+    revenue = get_total_revenue()
+    expense = get_total_expenses()
+    profit = revenue - expense
+    return profit
+
+def get_lead_by_amount():
+    query = ""
